@@ -1,2 +1,6 @@
 # dependencies
 /node_modules
+
+
+# os files
+**/.DS_Store
