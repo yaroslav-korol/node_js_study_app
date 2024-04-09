@@ -12,7 +12,12 @@ app.listen(3000);
 
 // home page
 app.get('/', (req, res) => {
-    res.render('index', {title: 'Home'});
+    const blogs = [
+        {title: 'How to start with Node.js', snippet: 'Node.js is a JavaScript runtime built on Chrome\'s V8 JavaScript engine.'},
+        {title: 'Express.js tutorial', snippet: 'Express.js is a minimal and flexible Node.js web application framework that provides a robust set of features for web and mobile applications.'},
+        {title: 'MongoDB tutorial', snippet: 'MongoDB is a free and open-source cross-platform document-oriented database program.'},
+    ];
+    res.render('index', {title: 'Home', blogs});
 });
 
 // about page
