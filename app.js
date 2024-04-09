@@ -12,12 +12,12 @@ app.listen(3000);
 
 // home page
 app.get('/', (req, res) => {
-    res.render('index');
+    res.render('index', {title: 'Home'});
 });
 
 // about page
 app.get('/about', (req, res) => {
-    res.render('about');
+    res.render('about', {title: 'About'});
 });
 
 
@@ -28,10 +28,10 @@ app.get('/about-us', (req, res) => {
 
 // create a new blog page
 app.get('/blogs/create', (req, res) => {
-    res.render('create.ejs');
+    res.render('create', {title: 'Create Blog'});
 });
-
+ 
 // 404 page
 app.use((req, res) => {
-    res.status(404).render('404');
+    res.status(404).render('404', {title: '404'});
 });
