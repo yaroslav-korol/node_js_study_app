@@ -8,7 +8,7 @@ const Blog = require('./models/blogs');
 const app = express();
 
 // connect to MongoDB
-const dbURI = 'mongodb+srv://node-user:usJWlotA6OIUcJBr@node-tutorials.qu87mss.mongodb.net/?retryWrites=true&w=majority&appName=node-tutorials'
+const dbURI = 'mongodb+srv://node-user:usJWlotA6OIUcJBr@node-tutorials.qu87mss.mongodb.net/node-blog-app?retryWrites=true&w=majority&appName=node-tutorials'
 mongoose.connect(dbURI)
     .then((result) => app.listen(3000))
     .catch((err) => console.log(err));
@@ -18,7 +18,50 @@ app.set('view engine', 'ejs');
 
 // middleware and static files
 app.use(express.static('public'));
+
+// middleware for parsing request body
 app.use(morgan('dev'));
+
+// mongoose and mongo sandbox routes
+// Create new test blog and save to Db
+app.get('/sandbox/create', (req, res) => {
+    const blog = new Blog({
+        title: 'Node.js sandbox',
+        snippet: 'This is a sandbox for testing Node.js',
+        body: 'This is a body for testing Node.js'
+    });
+
+    blog.save()
+        .then((result) => {
+            res.send(result)
+        })
+        .catch((err) => {
+            res.send(err)
+        });
+});
+
+// Read all blogs from Db
+app.get('/sandbox/read/all', (req, res) => {
+    Blog.find()
+        .then((result) => {
+            res.send(result)
+        })
+        .catch((err) => {
+            console.log(err)
+        });
+});
+
+// Read one blog from Db
+app.get('/sandbox/read/one', (req, res) => {
+    const id = '6616f1eb2162ee56aa222105';
+    Blog.findById(id)
+        .then((result) => {
+            res.send(result)
+        })
+        .catch((err) => {
+            console.log(err)
+        });
+});
 
 // home page
 app.get('/', (req, res) => {
