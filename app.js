@@ -1,17 +1,24 @@
 // import modules
 const express = require('express');
+const mongoose = require('mongoose');
+const morgan = require('morgan');
+const Blog = require('./models/blogs');
 
 // express app
 const app = express();
 
+// connect to MongoDB
+const dbURI = 'mongodb+srv://node-user:usJWlotA6OIUcJBr@node-tutorials.qu87mss.mongodb.net/?retryWrites=true&w=majority&appName=node-tutorials'
+mongoose.connect(dbURI)
+    .then((result) => app.listen(3000))
+    .catch((err) => console.log(err));
+
 // register view engine
 app.set('view engine', 'ejs');
 
-// listen for requests on port 3000
-app.listen(3000);
-
 // middleware and static files
 app.use(express.static('public'));
+app.use(morgan('dev'));
 
 // home page
 app.get('/', (req, res) => {
