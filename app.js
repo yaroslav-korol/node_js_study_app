@@ -84,6 +84,17 @@ app.get('/about-us', (req, res) => {
     res.redirect('/about');
 });
 
+// get all blogs from Db and render them
+app.get('/blogs', (req, res) => {
+    Blog.find().sort({ createdAt: -1})
+        .then((result) => {
+            res.render('index', {title: 'All Blogs', blogs: result })
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+});
+
 // create a new blog page
 app.get('/blogs/create', (req, res) => {
     res.render('create', {title: 'Create Blog'});
