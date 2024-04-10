@@ -22,6 +22,9 @@ app.use(express.static('public'));
 // middleware for parsing request body
 app.use(morgan('dev'));
 
+// middleware to encode urls
+app.use(express.urlencoded({extended: true}));
+
 // mongoose and mongo sandbox routes
 // Create new test blog and save to Db
 app.get('/sandbox/create', (req, res) => {
@@ -65,23 +68,17 @@ app.get('/sandbox/read/one', (req, res) => {
 
 // home page
 app.get('/', (req, res) => {
-    const blogs = [
-        {title: 'How to start with Node.js', snippet: 'Node.js is a JavaScript runtime built on Chrome\'s V8 JavaScript engine.'},
-        {title: 'Express.js tutorial', snippet: 'Express.js is a minimal and flexible Node.js web application framework that provides a robust set of features for web and mobile applications.'},
-        {title: 'MongoDB tutorial', snippet: 'MongoDB is a free and open-source cross-platform document-oriented database program.'},
-    ];
-    res.render('index', {title: 'Home', blogs});
-});
+    res.redirect('/blogs');
+  });
 
 // about page
 app.get('/about', (req, res) => {
     res.render('about', {title: 'About'});
 });
 
-
-// redirects example
-app.get('/about-us', (req, res) => {
-    res.redirect('/about');
+// create a new blog page
+app.get('/blogs/create', (req, res) => {
+    res.render('create', {title: 'Create a new Blog'});
 });
 
 // get all blogs from Db and render them
@@ -95,11 +92,46 @@ app.get('/blogs', (req, res) => {
         })
 });
 
-// create a new blog page
-app.get('/blogs/create', (req, res) => {
-    res.render('create', {title: 'Create Blog'});
+// get data from the input form and save to Db
+app.post('/blogs', (req, res) => {
+    const blog = new Blog(req.body);
+
+    blog.save()
+        .then((result) => {
+            res.redirect('/blogs');
+        })
+       .catch((err) => {
+            console.log(err)
+        });
+});
+
+
+// get blog by id and render it
+app.get('/blogs/:id', (req, res) => {
+    const id = req.params.id;
+
+    Blog.findById(id)
+        .then((result) => {
+            res.render('details', { blog: result, title: 'Blog Details' })
+        })
+        .catch((err) => {
+            console.log(err)
+        });
 });
  
+// delete blog by id
+app.delete('/blogs/:id', (req, res) => {
+    const id = req.params.id;
+
+    Blog.findByIdAndDelete(id)
+        .then((result) => {
+            res.json({ redirect: '/blogs', message: 'Blog deleted successfully' })
+        })
+        .catch((err) => {
+            console.log(err)
+        });
+});
+
 // 404 page
 app.use((req, res) => {
     res.status(404).render('404', {title: '404'});
