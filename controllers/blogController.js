@@ -17,7 +17,7 @@ const blog_details = (req, res) => {
       if (result) {
         res.render('blogs/details', { blog: result, title: 'Blog Details' });
       } else {
-        res.render('500', { title: 'Blog not found' });
+        res.render('404', { title: 'Blog not found' });
       }
     })
     .catch(err => {
