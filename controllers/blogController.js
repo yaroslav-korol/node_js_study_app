@@ -14,10 +14,15 @@ const blog_details = (req, res) => {
   const id = req.params.id;
   Blog.findById(id)
     .then(result => {
-      res.render('blogs/details', { blog: result, title: 'Blog Details' });
+      if (result) {
+        res.render('blogs/details', { blog: result, title: 'Blog Details' });
+      } else {
+        res.render('500', { title: 'Blog not found' });
+      }
     })
     .catch(err => {
       console.log(err);
+      res.render('500', { title: 'Internal Server Error' });
     });
 }
 
