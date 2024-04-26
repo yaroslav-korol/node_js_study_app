@@ -4,3 +4,6 @@
 
 # os files
 **/.DS_Store
+
+# env files
+.env

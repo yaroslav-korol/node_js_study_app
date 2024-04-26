@@ -1,4 +1,5 @@
 // import modules
+require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
@@ -8,8 +9,24 @@ const blogRoutes = require('./routes/blogRoutes');
 // express app
 const app = express();
 
+// db info
+const dbScheme = process.env.DB_SCHEME;
+const dbName = process.env.DB_NAME;
+const dbHost = process.env.DB_HOST;
+const dbCollection = process.env.DB_COLLECTION;
+
+// db params
+const dbQueryParams = 'retryWrites=true&w=majority';
+const dbAppNameParam = `appName=${dbName}`;
+
+// db credentials
+const username = process.env.DB_USERNAME;
+const password = process.env.DB_PASSWORD;
+
+// generate db URI
+const dbURI = `${dbScheme}${username}:${password}@${dbName}.${dbHost}/${dbCollection}?${dbQueryParams}&${dbAppNameParam}`;
+
 // connect to MongoDB
-const dbURI = 'mongodb+srv://node-user:usJWlotA6OIUcJBr@node-tutorials.qu87mss.mongodb.net/node-blog-app?retryWrites=true&w=majority&appName=node-tutorials'
 mongoose.connect(dbURI)
     .then((result) => app.listen(3000))
     .catch((err) => console.log(err));
@@ -27,7 +44,7 @@ app.use(morgan('dev'));
 app.use(express.urlencoded({extended: true}));
 
 // mongoose and mongo sandbox routes
-// Create new test blog and save to Db
+// create new test blog and save to Db
 app.get('/sandbox/create', (req, res) => {
     const blog = new Blog({
         title: 'Node.js sandbox',
